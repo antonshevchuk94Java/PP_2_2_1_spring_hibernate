@@ -20,10 +20,32 @@ public class UserDaoImp implements UserDao {
    }
 
    @Override
+   public void clearUsers() {
+      sessionFactory.getCurrentSession()
+              .createQuery("delete from User")
+              .executeUpdate();
+   }
+
+
+   @Override
    @SuppressWarnings("unchecked")
    public List<User> listUsers() {
       TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
       return query.getResultList();
+   }
+
+   @Override
+   public List<User> findUsersByCar(String model, int series) { // метод достает список User владеющих одинаковыми машинами.
+      String hql = "FROM User u " +
+              "WHERE u.car.model = :model " +
+              "AND u.car.series = :series";
+       List <User> users = sessionFactory
+               .getCurrentSession()
+               .createQuery(hql, User.class)
+               .setParameter("model",model)
+               .setParameter("series",series)
+               .getResultList();
+      return users;
    }
 
 }
