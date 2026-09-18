@@ -11,41 +11,45 @@ import java.util.List;
 @Repository
 public class UserDaoImp implements UserDao {
 
-   @Autowired
-   private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-   @Override
-   public void add(User user) {
-      sessionFactory.getCurrentSession().save(user);
-   }
+    @Autowired
+    public UserDaoImp(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-   @Override
-   public void clearUsers() {
-      sessionFactory.getCurrentSession()
-              .createQuery("delete from User")
-              .executeUpdate();
-   }
+    @Override
+    public void add(User user) {
+        sessionFactory.getCurrentSession().save(user);
+    }
+
+    @Override
+    public void clearUsers() {
+        sessionFactory.getCurrentSession()
+                .createQuery("delete from User")
+                .executeUpdate();
+    }
 
 
-   @Override
-   @SuppressWarnings("unchecked")
-   public List<User> listUsers() {
-      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
-      return query.getResultList();
-   }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<User> listUsers() {
+        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User");
+        return query.getResultList();
+    }
 
-   @Override
-   public List<User> findUsersByCar(String model, int series) { // метод достает список User владеющих одинаковыми машинами.
-      String hql = "FROM User u " +
-              "WHERE u.car.model = :model " +
-              "AND u.car.series = :series";
-       List <User> users = sessionFactory
-               .getCurrentSession()
-               .createQuery(hql, User.class)
-               .setParameter("model",model)
-               .setParameter("series",series)
-               .getResultList();
-      return users;
-   }
+    @Override
+    public List<User> findUsersByCar(String model, int series) { // метод достает список User владеющих одинаковыми машинами.
+        String hql = "FROM User u " +
+                "WHERE u.car.model = :model " +
+                "AND u.car.series = :series";
+        List<User> users = sessionFactory
+                .getCurrentSession()
+                .createQuery(hql, User.class)
+                .setParameter("model", model)
+                .setParameter("series", series)
+                .getResultList();
+        return users;
+    }
 
 }
